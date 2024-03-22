@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Leaflet.AccuratePosition example</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+	<!-- Leaflet -->
+	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css">
+	<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+
+	<!-- Accurate Position Plugin -->
+	<link rel="stylesheet" href="style.css">
+	<script src="../Leaflet.AccuratePosition.js"></script>
+	<!-- Bootstarp -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+	<link rel="stylesheet" href="/css/stylesheet.css">
+
+</head>
+<body>
+	   <!-- navgation bar -->
+	   <nav class="navbar navbar-dark bg-dark fixed-top">
+		<div class="container-fluid">
+		  <img src="user.png" class="rounded-circle" alt="icon" height="50px" width="50px" />
+  
+		  <a class="navbar-brand" href="#"></a>
+		  <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar"
+			aria-controls="offcanvasDarkNavbar">
+			<span class="navbar-toggler-icon"></span>
+		  </button>
+  
+		  <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasDarkNavbar"
+			aria-labelledby="offcanvasDarkNavbarLabel">
+			<div class="offcanvas-header position-relative">
+  
+			  <button id="closeButton" type="button" class="btn-close text-reset float-end" data-bs-dismiss="offcanvas"
+				aria-label="Close"></button>
+			  <!-- <img src="logo.jpg" class="rounded-circle " alt="icon" height="50px"  width="50px"> -->
+			  <h5 class="offcanvas-title text-dark h1 position-absolute top-0 start-50 translate-middle py-8 by-5"
+				id="offcanvasDarkNavbarLabel">Locatealert</h5>
+			</div>
+			<li>
+			  <hr class="dropdown-divider">
+			</li>
+  
+			<div class="offcanvas-body">
+			  <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+				<li class="nav-item">
+				  <!-- <a id="a" class="nav-link text-dark h4" href="/tools/routing/index.html">Routing</a> -->
+				</li>
+				<li class="nav-item">
+				  <a id="a" class="nav-link text-dark h4" href="/final_project/index.html">Home</a>
+				  <a id="a" class="nav-link text-dark h4" href="/tools/routing/index.html">Routing</a>
+				  <a id="a" class="nav-link text-dark h4" href="/tools/layers/layers.html">Map Layers</a>
+				  <a id="a" class="nav-link text-dark h4" href="/tools/Leaflet.AccuratePosition-master/main/index.html">Accurate Position</a>
+				  <a id="a" class="nav-link text-dark h4" href="/tools/_draw/draw.html">Map marker</a>
+				  <a id="a" class="nav-link text-dark h4" href="/tools/settings.html">Settings</a>
+				</li>
+				
+				<li>
+				  <hr class="dropdown-divider">
+				</li>
+				  <a id="a" class="nav-link text-dark h4" href="mailto:dhanushmano338@gmail.com" >share</a>
+				  <a id="a" class="nav-link text-dark h4" href="/tools/about.html">About</a>
+  
+			  </ul>
+			  </li>
+			  </ul>
+  
+			</div>
+		  </div>
+		</div>
+	  </nav>
+  
+	  <div style="display: flex; height: 60%; width: 100%; padding-top: 60px; border-top:60px">
+		<div id="map" style="width: 100%; height: 50vh; padding-top: 60px; border-top:60px ;" ></div>
+	  </div>
+	  <ul id="status" class="progressing">
+		<li>Find accurate position … (Desired accuracy: 20)</li>
+	</ul>
+
+	<script>
+		var map = L.map('map').setView([13.0479,80.0934], 3);
+
+		L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+			attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+		}).addTo(map);
+
+		function onAccuratePositionError (e) {
+			addStatus(e.message, 'error');
+		}
+
+		function onAccuratePositionProgress (e) {
+			var message = 'Progressing … (Accuracy: ' + e.accuracy + ')';
+			addStatus(message, 'progressing');
+		}
+
+		function onAccuratePositionFound (e) {
+			var message = 'Most accurate position found (Accuracy: ' + e.accuracy + ')';
+			addStatus(message, 'done');
+			map.setView(e.latlng, 12);
+			L.marker(e.latlng).addTo(map);
+		}
+
+		function addStatus (message, className) {
+			var ul = document.getElementById('status'),
+				li = document.createElement('li');
+			li.appendChild(document.createTextNode(message));
+			ul.className = className;
+			ul.appendChild(li);
+		}
+
+		map.on('accuratepositionprogress', onAccuratePositionProgress);
+		map.on('accuratepositionfound', onAccuratePositionFound);
+		map.on('accuratepositionerror', onAccuratePositionError);
+
+		map.findAccuratePosition({
+			maxWait: 10000,
+			desiredAccuracy: 20
+		});
+	</script>
+	</body>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+	<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+	 <script>
+       </script> 
+	</html>

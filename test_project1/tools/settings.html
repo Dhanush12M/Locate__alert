@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Locate Alert Settings</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <style>
+        .card {
+            width: 400px;
+            margin: 0 auto;
+            margin-top: 50px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            position: relative;
+        }
+        .back-icon {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <a href="#" onclick="goBack()" class="back-icon"><i class="fas fa-arrow-left fa-lg m-2"></i></a>
+    
+    <div class="card">
+        <h1 class="text-center mb-4">Locate Alert Settings</h1>
+        
+        <div class="form-group">
+            <label for="ringtone">Select Ringtone:</label>
+            <select class="form-control" id="ringtone">
+                <option value="ringtone1">Ringtone 1</option>
+                <option value="ringtone2">Ringtone 2</option>
+                <option value="ringtone3">Ringtone 3</option>
+                <!-- Add more ringtone options as needed -->
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="vibration">Vibration:</label>
+            <select class="form-control" id="vibration">
+                <option value="on">On</option>
+                <option value="off">Off</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="notificationInterval">Notification Interval:</label>
+            <select class="form-control" id="notificationInterval">
+                <option value="5">Every 5 minutes</option>
+                <option value="10">Every 10 minutes</option>
+                <option value="15">Every 15 minutes</option>
+                <!-- Add more interval options as needed -->
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="scheduleDateTime">Schedule Date & Time:</label>
+            <input type="datetime-local" class="form-control" id="scheduleDateTime">
+        </div>
+
+        <div class="form-group">
+            <label for="scheduleLocation">Schedule Location:</label>
+            <input type="text" class="form-control" id="scheduleLocation">
+        </div>
+
+        <button class="btn btn-primary btn-block" onclick="saveSettings()">Save Settings</button>
+    </div>
+
+    <!-- Bootstrap JS (optional if you require Bootstrap JavaScript features) -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Font Awesome JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
+
+    <script>
+        // Function to save settings to local storage
+        function saveSettings() {
+            var selectedRingtone = document.getElementById("ringtone").value;
+            var selectedVibration = document.getElementById("vibration").value;
+            var selectedInterval = document.getElementById("notificationInterval").value;
+            var scheduledDateTime = document.getElementById("scheduleDateTime").value;
+            var scheduledLocation = document.getElementById("scheduleLocation").value;
+            
+            // Save settings to local storage
+            localStorage.setItem("ringtone", selectedRingtone);
+            localStorage.setItem("vibration", selectedVibration);
+            localStorage.setItem("notificationInterval", selectedInterval);
+            localStorage.setItem("scheduledDateTime", scheduledDateTime);
+            localStorage.setItem("scheduledLocation", scheduledLocation);
+
+            // For demonstration purposes, alert the saved settings
+            alert("Settings saved:\nRingtone: " + selectedRingtone + "\nVibration: " + selectedVibration + "\nNotification Interval: " + selectedInterval + " minutes" + "\nScheduled Date & Time: " + scheduledDateTime + "\nScheduled Location: " + scheduledLocation);
+        }
+
+        // Function to load settings from local storage
+        window.onload = function() {
+            var savedRingtone = localStorage.getItem("ringtone");
+            var savedVibration = localStorage.getItem("vibration");
+            var savedInterval = localStorage.getItem("notificationInterval");
+            var savedScheduledDateTime = localStorage.getItem("scheduledDateTime");
+            var savedScheduledLocation = localStorage.getItem("scheduledLocation");
+
+            if (savedRingtone !== null) {
+                document.getElementById("ringtone").value = savedRingtone;
+            }
+
+            if (savedVibration !== null) {
+                document.getElementById("vibration").value = savedVibration;
+            }
+
+            if (savedInterval !== null) {
+                document.getElementById("notificationInterval").value = savedInterval;
+            }
+
+            if (savedScheduledDateTime !== null) {
+                document.getElementById("scheduleDateTime").value = savedScheduledDateTime;
+            }
+
+            if (savedScheduledLocation !== null) {
+                document.getElementById("scheduleLocation").value = savedScheduledLocation;
+            }
+        };
+
+        // Function to go back to the previous page
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+</body>
+</html>

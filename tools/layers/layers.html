@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaflet Map with Layers Control</title>
+    <!--  CSS styles  -->
+   
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/stylesheet.css">
+    <!-- Include Leaflet CSS and JavaScript -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+
+
+    <link rel="stylesheet" href="/css/stylesheet.css" />
+    <a id="hover-txt" href="#">Hover Me</a>
+</head>
+<body>
+  
+  
+       <!-- navgation bar -->
+    <nav class="navbar navbar-dark bg-dark fixed-top">
+      <div class="container-fluid">
+        <img src="user.png" class="rounded-circle " alt="icon" height="50px" width="50px">
+
+        <a class="navbar-brand" href="#"></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar"
+          aria-controls="offcanvasDarkNavbar">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasDarkNavbar"
+          aria-labelledby="offcanvasDarkNavbarLabel">
+          <div class="offcanvas-header position-relative">
+
+            <button id="closeButton" type="button" class="btn-close text-reset float-end" data-bs-dismiss="offcanvas"
+              aria-label="Close"></button>
+            <center>
+            <h5 class="offcanvas-title text-dark h1 position-absolute top-0 start-50 translate-middle py-8 border-2"
+ id="offcanvasDarkNavbarLabel">Locatealert</h5>
+              </center>
+            </div>
+          <li>
+            <hr class="dropdown-divider">
+          </li>
+
+          <div class="offcanvas-body">
+            <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+              <li class="nav-item">
+                <!-- <a id="a" class="nav-link text-dark h4" href="/tools/routing/index.html">Routing</a> -->
+              </li>
+              <li class="nav-item">
+                <a id="a" class="nav-link text-dark h4" href="/index.html">Home</a>
+                <a id="a" class="nav-link text-dark h4" href="/tools/routing/index.html">Routing</a>
+                <a id="a" class="nav-link text-dark h4" href="/tools/layers/layers.html">Map Layers</a>
+                <!-- <a id="a" class="nav-link text-dark h4" href="/tools/Leaflet.AccuratePosition-master/main/index.html">Accurate Position</a> -->
+                <a id="a" class="nav-link text-dark h4" href="/tools/_draw/draw.html">Map marker</a>
+                <a id="a" class="nav-link text-dark h4" href="/tools/settings.html">Settings</a>
+              </li>
+              
+              <li>
+                <hr class="dropdown-divider">
+              </li>
+                <a id="a" class="nav-link text-dark h4" href="mailto:dhanushmano338@gmail.com" >share</a>
+                <a id="a" class="nav-link text-dark h4" href="/tools/about.html">About</a>
+
+            </ul>
+            </li>
+            </ul>
+
+          </div>
+        </div>
+      </div>
+    </nav>
+    <div style="display: flex; height: 100%; width: 100%; border-top:40px; padding-top:40px">
+        <div id="map" style="width: 100%; height: 100vh; border-top:40px; padding-top:40px"  ></div>
+      </div>
+    </body>
+      <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"></script>
+	<script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+
+    <script>
+        // Create a map centered at a specific location
+        var map = L.map('map').setView([12.2313542,79.4269603], 13);
+
+        // Add base layers (tile layers)
+        var osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+        var marker;
+
+  // Add controller on the left
+  L.control.scale({ position: 'bottomleft' }).addTo(map);
+
+
+
+  var geocoder = L.Control.geocoder({
+    defaultMarkGeocode: false,
+    placeholder: 'Search for a place...',
+    errorMessage: 'Nothing found.',
+    showResultIcons: true,
+    collapsed: true
+  }).on('markgeocode', function(e) {
+    if (marker) {
+      map.removeLayer(marker);
+    }
+    marker = L.marker(e.geocode.center).addTo(map);
+    map.setView(e.geocode.center, 13);
+  }).addTo(map);
+
+        var watercolorLayer = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.jpg', {
+            attribution: '© Stamen Design'
+        });
+
+        var darkLayer = L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png', {
+            attribution: '© CartoDB'
+        });
+
+        // Add Google Street View and Google Satellite layers (third-party plugins required)
+        var googleStreetLayer = L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+            subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+            attribution: '© Google Street View'
+        });
+
+        var googleSatelliteLayer = L.tileLayer('https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+            subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+            attribution: '© Google Satellite'
+        });
+
+        // Create a layer control with base layers and overlays
+        var baseMaps = {
+            'OpenStreetMap': osmLayer,
+            'Watercolor': watercolorLayer,
+            'Dark': darkLayer
+        };
+
+        var overlayMaps = {
+            'Google Street View': googleStreetLayer,
+            'Google Satellite': googleSatelliteLayer
+        };
+
+        var layerControl = L.control.layers(baseMaps, overlayMaps).addTo(map);
+    </script>
+
+  
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+ 
+
+</html>
